@@ -25,12 +25,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     if METHOD == 'INVITE':
         my_socket.send(bytes('INVITE sip:' + MESSAGE.split(':')[0] + 
                              ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
-    #CUANDO SE RECIBA EL 100 TRYING, 180 RINGING Y 200 OK
-    #NO LO PASO POR LA SHELL
-    
-    if METHOD == 'ACK':
-        my_socket.send(bytes('ACK sip:' + MESSAGE.split(':')[0] + 
-                             ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
     
     if METHOD == 'BYE':
         my_socket.send(bytes('BYE sip:' + MESSAGE.split(':')[0] + 
@@ -39,6 +33,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     
     data = my_socket.recv(1024)
     print('Recibido -- ', data.decode('utf-8'))
+    message_receive = data.decode('utf-8').split(' ')
+    for element in message_receive:
+        if element == '200':
+            my_socket.send(bytes('ACK sip:' + MESSAGE.split(':')[0] + 
+                                 ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
     print("Terminando socket...")
 
 print("Fin.")
