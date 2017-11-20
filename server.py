@@ -19,13 +19,19 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
-            print("El cliente nos manda " + line.decode('utf-8'))
+            print(line.decode('utf-8'))
             
             if line.decode('utf-8').split(' ')[0] == 'INVITE':
-                self.wfile.write(b"SIP/2.0 100 Trying\r\n"+
-                                 b"SIP/2.0 180 Ringing\r\n"+
+                self.wfile.write(b"SIP/2.0 100 Trying\r\n\r\n"+
+                                 b"SIP/2.0 180 Ringing\r\n\r\n"+
                                  b"SIP/2.0 200 OK\r\n\r\n")
             
+            if line.decode('utf-8').split(' ')[0] == 'ACK':
+                #ENVIA LA CANCION
+                pass
+            
+            if line.decode('utf-8').split(' ')[0] == 'BYE':
+                self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
 
             
             # Si no hay más líneas salimos del bucle infinito
