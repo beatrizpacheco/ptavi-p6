@@ -33,7 +33,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             elif line.decode('utf-8').split(' ')[0] == 'BYE':
                 self.wfile.write(b"SIP/2.0 200 OK\r\n\r\n")
 
-            if line.decode('utf-8').split(' ')[0] not in lista:
+            if line.decode('utf-8').split(' ')[0] not in self.lista:
             #REVISAR ESTO, NO LO HACE BIEN
                 self.wfile.write(b"SIP/2.0 405 Method Not Allowed\r\n\r\n")
             
@@ -45,6 +45,8 @@ class EchoHandler(socketserver.DatagramRequestHandler):
             # Si no hay más líneas salimos del bucle infinito
             if not line:
                 break
+                
+#QUITAR EL WHILE Y PASAR LA LINEA A LISTA CON SPLIT. QUITANDO WHILE NO ME DARIA EL ERROR?
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
