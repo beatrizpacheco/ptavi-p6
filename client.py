@@ -22,19 +22,21 @@ with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
     my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     my_socket.connect((IP, PORT))
 
-    if METHOD == 'INVITE':
-        my_socket.send(bytes('INVITE sip:' + MESSAGE.split(':')[0] + 
+    if METHOD == 'INVITE' or METHOD == 'BYE':
+        my_socket.send(bytes(METHOD + ' sip:' + MESSAGE.split(':')[0] + 
                              ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
     
-    if METHOD == 'BYE':
-        my_socket.send(bytes('BYE sip:' + MESSAGE.split(':')[0] + 
+    #PARA PROBAR EN EL SERVIDOR EL ERROR 405
+    else:
+        my_socket.send(bytes(METHOD + ' sip:' + MESSAGE.split(':')[0] + 
                              ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
+    #
     
     data = my_socket.recv(1024)
     print('Recibido -- ', data.decode('utf-8'))
     message_receive = data.decode('utf-8').split(' ')
     for element in message_receive:
-        if element == '200':
+        if METHOD != 'BYE' and element == '200':
             my_socket.send(bytes('ACK sip:' + MESSAGE.split(':')[0] + 
                                  ' SIP/2.0\r\n', 'utf-8') + b'\r\n')
     print("Terminando socket...")
